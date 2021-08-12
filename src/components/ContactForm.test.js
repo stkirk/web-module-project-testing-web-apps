@@ -71,6 +71,55 @@ test('renders "lastName is a required field" if an last name is not entered and 
   expect(emailError).toHaveTextContent("lastName is a required field");
 });
 
-test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {});
+test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {
+  render(<ContactForm />);
+  const firstNameInput = screen.getByLabelText(/first name/i);
+  const lastNameInput = screen.getByLabelText(/last name/i);
+  const emailInput = screen.getByLabelText(/email/i);
+  userEvent.type(firstNameInput, "Darth");
+  userEvent.type(lastNameInput, "Revan");
+  userEvent.type(emailInput, "revan@sith.org");
+  const submitButton = screen.getByRole("button", { name: /submit/i });
+  userEvent.click(submitButton);
+  //see if info renders
+  const firstnameDisplay = screen.getByTestId("firstnameDisplay");
+  expect(firstnameDisplay).toBeVisible();
+  expect(firstnameDisplay).toHaveTextContent("Darth");
+  const lastnameDisplay = screen.getByTestId("lastnameDisplay");
+  expect(lastnameDisplay).toBeVisible();
+  expect(lastnameDisplay).toHaveTextContent("Revan");
+  const emailDisplay = screen.getByTestId("emailDisplay");
+  expect(emailDisplay).toBeVisible();
+  expect(emailDisplay).toHaveTextContent("revan@sith.org");
+  const messageDisplay = screen.queryByTestId("messageDisplay");
+  expect(messageDisplay).not.toBeInTheDocument();
+});
 
-test("renders all fields text when all fields are submitted.", async () => {});
+test("renders all fields text when all fields are submitted.", async () => {
+  render(<ContactForm />);
+  const firstNameInput = screen.getByLabelText(/first name/i);
+  const lastNameInput = screen.getByLabelText(/last name/i);
+  const emailInput = screen.getByLabelText(/email/i);
+  const messageInput = screen.getByLabelText(/message/i);
+  userEvent.type(firstNameInput, "Darth");
+  userEvent.type(lastNameInput, "Revan");
+  userEvent.type(emailInput, "revan@sith.org");
+  userEvent.type(messageInput, "Who I am is not important, my message is.");
+  const submitButton = screen.getByRole("button", { name: /submit/i });
+  userEvent.click(submitButton);
+  //see if info renders
+  const firstnameDisplay = screen.getByTestId("firstnameDisplay");
+  expect(firstnameDisplay).toBeVisible();
+  expect(firstnameDisplay).toHaveTextContent("Darth");
+  const lastnameDisplay = screen.getByTestId("lastnameDisplay");
+  expect(lastnameDisplay).toBeVisible();
+  expect(lastnameDisplay).toHaveTextContent("Revan");
+  const emailDisplay = screen.getByTestId("emailDisplay");
+  expect(emailDisplay).toBeVisible();
+  expect(emailDisplay).toHaveTextContent("revan@sith.org");
+  const messageDisplay = screen.getByTestId("messageDisplay");
+  expect(messageDisplay).toBeVisible();
+  expect(messageDisplay).toHaveTextContent(
+    "Who I am is not important, my message is."
+  );
+});
